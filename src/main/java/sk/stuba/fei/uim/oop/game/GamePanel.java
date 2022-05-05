@@ -11,11 +11,14 @@ import java.awt.image.BufferedImage;
 import java.awt.image.ImageObserver;
 import java.io.IOException;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 
 public class GamePanel extends JPanel implements KeyListener {
     BufferedImage img;
-    int x, y;
+    int drawx, drawy,Xl,Yl,Xt,Yt;
+    double Vl,Vr;
+    double fi;
     double rotation;
     double acceleration;
     double speed;
@@ -27,8 +30,12 @@ public class GamePanel extends JPanel implements KeyListener {
     AffineTransform af;
 
     public GamePanel() {
-        x = 0;
-        y = 0;
+        drawx = 0;
+        drawy = 0;
+
+        fi = 0;
+        Vl = 0;
+        Vr = 0;
         this.addKeyListener(this);
         this.setFocusable(true);
         this.requestFocus();
@@ -42,6 +49,10 @@ public class GamePanel extends JPanel implements KeyListener {
             e.printStackTrace();
         }
 
+
+    }
+
+    private void calculateLocationAndRotation(){
 
     }
 
@@ -67,7 +78,7 @@ public class GamePanel extends JPanel implements KeyListener {
 
 // Rotation information
 
-        double rotationRequired = Math.toRadians (0);
+        double rotationRequired = Math.toRadians (fi);
         double locationX = img.getWidth();
         double locationY = img.getHeight();
         AffineTransform tx = AffineTransform.getRotateInstance(rotationRequired, locationX, locationY);
@@ -76,35 +87,47 @@ public class GamePanel extends JPanel implements KeyListener {
 
 // Drawing the rotated image at the required drawing locations
         g2d.setBackground(Color.GREEN);
-        g2d.drawImage(op.filter(img, null), x, y, null);
+        g2d.drawImage(op.filter(img, null), drawx, drawy, null);
     }
 
 
 
 
     @Override
-    public void keyTyped(KeyEvent e) {
-
+    public synchronized void keyPressed(KeyEvent e) {
+        pressedKeys.add(e.getKeyCode());
+        Point offset = new Point();
+        if (!pressedKeys.isEmpty()) {
+            for (Iterator<Integer> it = pressedKeys.iterator(); it.hasNext();) {
+                switch (it.next()) {
+                    case KeyEvent.VK_W:
+                    case KeyEvent.VK_UP:
+                        drawy--;
+                        break;
+                    case KeyEvent.VK_A:
+                    case KeyEvent.VK_LEFT:
+                        drawx--;
+                        break;
+                    case KeyEvent.VK_S:
+                    case KeyEvent.VK_DOWN:
+                        drawy++;
+                        break;
+                    case KeyEvent.VK_D:
+                    case KeyEvent.VK_RIGHT:
+                        drawx++;
+                        break;
+                }
+            }
+        }
+        System.out.println(offset); // Do something with the offset.
     }
 
     @Override
-    public void keyPressed(KeyEvent e) {
-        if (e.getKeyCode() == KeyEvent.VK_W){
-            y--;
-        }
-        if (e.getKeyCode() == KeyEvent.VK_S){
-            y++;
-        }
-        if (e.getKeyCode() == KeyEvent.VK_A){
-            x--;
-        }
-        if (e.getKeyCode() == KeyEvent.VK_D){
-            x++;
-        }
+    public synchronized void keyReleased(KeyEvent e) {
+        pressedKeys.remove(e.getKeyCode());
     }
 
     @Override
-    public void keyReleased(KeyEvent e) {
-
-    }
+    public void keyTyped(KeyEvent e) { /* Not used */ }
 }
+
