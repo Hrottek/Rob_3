@@ -2,24 +2,26 @@ package sk.stuba.fei.uim.oop.game;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.ArrayList;
-//private JLabel winLabel;
-//private int boardSizeInt;
-//private final List<Player> players;
-//private final JFrame mainWindow;
-//private JPanel playBoard, mainPanel;
-//private JTextArea scoreText;
-//private final List<Tile> tiles;
-//private BoardSizeSlider sizeSlider;
-//private JComboBox colorChoice;
-//private BoardImagesBuffer images;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.Arrays;
+import java.util.List;
+import java.util.StringJoiner;
+import java.lang.Object;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
 
 public class Game {
     JFrame mainWindow;
     GamePanel gamePanel;
+    List timeList;
 
     public Game() {
-
+       // timeList = new List();
         mainWindow = new JFrame();
         mainWindow.setSize(1000,1000);
         mainWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -29,6 +31,7 @@ public class Game {
         mainWindow.setResizable(false);
 
         gamePanel = new GamePanel();
+
         mainWindow.setLayout(new GridLayout(1,1));
 
         mainWindow.add(gamePanel);
@@ -36,21 +39,7 @@ public class Game {
         mainWindow.setVisible(true);
 
         gamePanel.moveLoop();
-
     }
 
 
-
-
-
-//    boardSizeInt  = 6;
-//    players = new ArrayList<>();
-//    JFrame mainWindow = new JFrame();
-//        players.add(new Player(Chips.BLACK,this));
-//        players.add(new Bot(Chips.WHITE,this));
-//    tiles = new ArrayList<>();
-//
-//    initialiseWhole();
-//        mainWindow.setVisible(true);
-//        players.get(0).startTurn();
 }

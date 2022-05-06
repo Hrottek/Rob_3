@@ -13,15 +13,19 @@ import java.io.IOException;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
+import java.time.Instant;
+
+import static java.lang.Thread.sleep;
 
 public class GamePanel extends JPanel implements KeyListener {
     BufferedImage img;
-    int drawx, drawy,Xl,Yl,Xt,Yt;
+    double drawx, drawy,Xl,Yl,Xt,Yt;
     double Vl,Vr;
     double fi;
     double rotation;
     double acceleration;
     double speed;
+    double L;
     private final Set<Integer> pressedKeys = new HashSet<>();
 
 
@@ -30,12 +34,17 @@ public class GamePanel extends JPanel implements KeyListener {
     AffineTransform af;
 
     public GamePanel() {
-        drawx = 0;
-        drawy = 0;
+
+        L = 0.2;
+        drawx = 500;
+        drawy = 500;
 
         fi = 0;
+        fi = Math.toRadians(fi);
         Vl = 0;
         Vr = 0;
+
+        acceleration = 0.01;
         this.addKeyListener(this);
         this.setFocusable(true);
         this.requestFocus();
@@ -44,25 +53,47 @@ public class GamePanel extends JPanel implements KeyListener {
         //ImageObserver observer;
         try {
             img = ImageIO.read((getClass().getResourceAsStream("/podvozok1.png")));
-            img.getScaledInstance(50,50,Image.SCALE_SMOOTH);
+            img.getScaledInstance(5,5,Image.SCALE_SMOOTH);
+
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-
     }
 
     private void calculateLocationAndRotation(){
+        //
+        if(Vl != 0 || Vr != 0){
+            double wt = (Vr - Vl)/L;
+            double vt = (Vr + Vl)/2;
+            double dfi = wt * 0.0001;
+            fi += dfi;
+            double dx = vt * Math.cos(fi)*0.01;
+            double dy = vt * Math.sin(fi)*0.01;
+
+            if (drawx + dx >= 0 && drawx + dx <= 900) {
+                drawx += dx;
+            }
+            if (drawy + dy >= 0 && drawy + dy <= 900) {
+               drawy += dy;
+            }
+
+            System.out.println(dx);
+            System.out.println(dy);
+        }
 
     }
 
     public void moveLoop(){
         while(true){
+            calculateLocationAndRotation();
+//            if(Vl != 0 && Vr != 0){
+//
+//            }
             repaint();
+
         }
     }
-
-
 
     @Override
     protected void paintComponent(Graphics g) {
@@ -73,21 +104,29 @@ public class GamePanel extends JPanel implements KeyListener {
     private void rotate(Graphics g){
         Graphics2D g2d = (Graphics2D) g;
         // The required drawing location
-        int drawLocationX = 300;
-        int drawLocationY = 300;
 
 // Rotation information
 
-        double rotationRequired = Math.toRadians (fi);
-        double locationX = img.getWidth();
-        double locationY = img.getHeight();
-        AffineTransform tx = AffineTransform.getRotateInstance(rotationRequired, locationX, locationY);
+        double locationX = img.getWidth()/2;
+        double locationY = img.getHeight()/2;
+        AffineTransform tx = AffineTransform.getRotateInstance(fi + Math.PI/2, locationX, locationY);
       //  tx.scale(0.1,0.1);
         AffineTransformOp op = new AffineTransformOp(tx, AffineTransformOp.TYPE_BILINEAR);
 
+
 // Drawing the rotated image at the required drawing locations
         g2d.setBackground(Color.GREEN);
-        g2d.drawImage(op.filter(img, null), drawx, drawy, null);
+        g2d.drawImage(op.filter(img, null), (int)drawx, (int)drawy, null);
+    }
+
+    private void deccelarate(int V) {
+        while (V != 0) {
+            if (V > 0) {
+                V--;
+            } else{
+                V++;
+            }
+        }
     }
 
 
@@ -95,36 +134,74 @@ public class GamePanel extends JPanel implements KeyListener {
 
     @Override
     public synchronized void keyPressed(KeyEvent e) {
+       // pressedKeys.remove(e.getKeyCode());
         pressedKeys.add(e.getKeyCode());
-        Point offset = new Point();
         if (!pressedKeys.isEmpty()) {
             for (Iterator<Integer> it = pressedKeys.iterator(); it.hasNext();) {
                 switch (it.next()) {
                     case KeyEvent.VK_W:
                     case KeyEvent.VK_UP:
-                        drawy--;
+                        Vl+=acceleration;
+                        Vr+=acceleration;
                         break;
                     case KeyEvent.VK_A:
                     case KeyEvent.VK_LEFT:
-                        drawx--;
+                        Vl+=acceleration;
+                        //Vr-=acceleration;
                         break;
                     case KeyEvent.VK_S:
                     case KeyEvent.VK_DOWN:
-                        drawy++;
+                        Vl-=acceleration;
+                        Vr-=acceleration;
                         break;
                     case KeyEvent.VK_D:
                     case KeyEvent.VK_RIGHT:
-                        drawx++;
+                        //Vl-=acceleration;
+                        Vr+=acceleration;
                         break;
+
+                    case KeyEvent.VK_SPACE:
+                        Vl = 0;
+                        Vr = 0;
                 }
             }
         }
-        System.out.println(offset); // Do something with the offset.
     }
 
     @Override
     public synchronized void keyReleased(KeyEvent e) {
         pressedKeys.remove(e.getKeyCode());
+//        pressedKeys.add(e.getKeyCode());
+//        if (!pressedKeys.isEmpty()) {
+//            for (Iterator<Integer> it = pressedKeys.iterator(); it.hasNext();) {
+//                switch (it.next()) {
+//                    case KeyEvent.VK_W:
+//                    case KeyEvent.VK_UP:
+//                        Vl-=2*acceleration;
+//                        Vr-=2*acceleration;
+//                        break;
+//                    case KeyEvent.VK_A:
+//                    case KeyEvent.VK_LEFT:
+//                        Vl-=2*acceleration;
+//                        //Vr-=acceleration;
+//                        break;
+//                    case KeyEvent.VK_S:
+//                    case KeyEvent.VK_DOWN:
+//                        Vl+=2*acceleration;
+//                        Vr+=2*acceleration;
+//                        break;
+//                    case KeyEvent.VK_D:
+//                    case KeyEvent.VK_RIGHT:
+//                        //Vl-=acceleration;
+//                        Vr+=2*acceleration;
+//                        break;
+//
+//                    case KeyEvent.VK_SPACE:
+//                        Vl = 0;
+//                        Vr = 0;
+//                }
+//            }
+//        }
     }
 
     @Override
