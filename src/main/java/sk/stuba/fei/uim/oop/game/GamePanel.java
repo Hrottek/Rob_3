@@ -8,30 +8,32 @@ import java.awt.event.KeyListener;
 import java.awt.geom.AffineTransform;
 import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
-import java.awt.image.ImageObserver;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
-import java.time.Instant;
 
 
 public class GamePanel extends JPanel implements KeyListener {
     BufferedImage img;
-    double drawx, drawy;
+    double drawx, drawy,Xt,Yt;
+
     double Vl,Vr;
     double fi;
     double acceleration;
     double L;
     private final Set<Integer> pressedKeys = new HashSet<>();
+    Double end;
+    Game game;
+    long start1;
 
 
     AffineTransform identityTrans;
 
     AffineTransform af;
 
-    public GamePanel() {
-
+    public GamePanel(Game game) {
+        this.game = game;
         L = 0.2;
         drawx = 500;
         drawy = 500;
@@ -56,6 +58,12 @@ public class GamePanel extends JPanel implements KeyListener {
             e.printStackTrace();
         }
 
+        start1 = System.currentTimeMillis();
+        game.timeList.add(0.0);
+        game.XtList.add(Xt);
+        game.YtList.add(Yt);
+        game.fiList.add(fi);
+
     }
 
     private void calculateLocationAndRotation(){
@@ -75,8 +83,11 @@ public class GamePanel extends JPanel implements KeyListener {
                drawy += dy;
             }
 
-            System.out.println(dx);
-            System.out.println(dy);
+            Xt +=dx;
+            Yt +=dy;
+
+            System.out.println(Vl);
+            System.out.println(Vr);
         }
 
     }
@@ -84,12 +95,18 @@ public class GamePanel extends JPanel implements KeyListener {
     public void moveLoop(){
         while(true){
             calculateLocationAndRotation();
-//            if(Vl != 0 && Vr != 0){
-//
-//            }
-            repaint();
+            if(Vl != 0 || Vr != 0){
+                repaint();
+           }
 
-
+            if((double)(System.currentTimeMillis() - start1)/1000 > 0.01){
+                double end = (double)(System.currentTimeMillis() - start1)/1000;
+                game.timeList.add(end + game.timeList.get(game.timeList.size() -1));
+                game.XtList.add(Xt);
+                game.YtList.add(Yt);
+                game.fiList.add(fi);
+                start1 = System.currentTimeMillis();
+            }
 
         }
     }
@@ -127,9 +144,6 @@ public class GamePanel extends JPanel implements KeyListener {
             }
         }
     }
-
-
-
 
     @Override
     public synchronized void keyPressed(KeyEvent e) {
