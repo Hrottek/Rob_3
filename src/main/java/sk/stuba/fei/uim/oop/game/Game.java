@@ -62,12 +62,14 @@ public class Game {
             }
             sb.append('\n');
             for (Double value : XtList) {
-                sb.append(value * 0.01);
+                //sb.append(value * 0.01);
+                sb.append(value);
                 sb.append(',');
             }
             sb.append('\n');
             for (Double aDouble : YtList) {
-                sb.append((aDouble * - 1)*0.01);
+              // sb.append((aDouble * - 1)*0.01); //@TODO
+                sb.append(aDouble * - 1);
                 sb.append(',');
             }
             sb.append('\n');

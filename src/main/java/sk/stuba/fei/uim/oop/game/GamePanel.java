@@ -26,10 +26,7 @@ public class GamePanel extends JPanel implements KeyListener {
     Double end;
     Game game;
     long start1;
-
-
     AffineTransform identityTrans;
-
     AffineTransform af;
 
     public GamePanel(Game game) {
@@ -43,7 +40,7 @@ public class GamePanel extends JPanel implements KeyListener {
         Vl = 0;
         Vr = 0;
 
-        acceleration = 0.01;
+        acceleration = 0.0001;
         this.addKeyListener(this);
         this.setFocusable(true);
         this.requestFocus();
@@ -71,7 +68,7 @@ public class GamePanel extends JPanel implements KeyListener {
         if(Vl != 0 || Vr != 0){
             double wt = (Vr - Vl)/L;
             double vt = (Vr + Vl)/2;
-            double dfi = wt * 0.0001;
+            double dfi = wt * 0.0001;  //@TODO
             fi += dfi;
             double dx = vt * Math.cos(fi)*0.01;
             double dy = vt * Math.sin(fi)*0.01;
@@ -86,8 +83,8 @@ public class GamePanel extends JPanel implements KeyListener {
             Xt +=dx;
             Yt +=dy;
 
-            System.out.println(Vl);
-            System.out.println(Vr);
+//            System.out.println(Vl); @TODO
+//            System.out.println(Vr);
         }
 
     }
@@ -107,7 +104,6 @@ public class GamePanel extends JPanel implements KeyListener {
                 game.fiList.add(fi);
                 start1 = System.currentTimeMillis();
             }
-
         }
     }
 
@@ -131,7 +127,6 @@ public class GamePanel extends JPanel implements KeyListener {
 
 
 // Drawing the rotated image at the required drawing locations
-        g2d.setBackground(Color.GREEN);
         g2d.drawImage(op.filter(img, null), (int)drawx, (int)drawy, null);
     }
 
@@ -147,36 +142,33 @@ public class GamePanel extends JPanel implements KeyListener {
 
     @Override
     public synchronized void keyPressed(KeyEvent e) {
-       // pressedKeys.remove(e.getKeyCode());
         pressedKeys.add(e.getKeyCode());
-        if (!pressedKeys.isEmpty()) {
-            for (Iterator<Integer> it = pressedKeys.iterator(); it.hasNext();) {
-                switch (it.next()) {
-                    case KeyEvent.VK_W:
-                    case KeyEvent.VK_UP:
-                        Vl+=acceleration;
-                        Vr+=acceleration;
-                        break;
-                    case KeyEvent.VK_A:
-                    case KeyEvent.VK_LEFT:
-                        Vl+=acceleration;
-                        //Vr-=acceleration;
-                        break;
-                    case KeyEvent.VK_S:
-                    case KeyEvent.VK_DOWN:
-                        Vl-=acceleration;
-                        Vr-=acceleration;
-                        break;
-                    case KeyEvent.VK_D:
-                    case KeyEvent.VK_RIGHT:
-                        //Vl-=acceleration;
-                        Vr+=acceleration;
-                        break;
+        for (Iterator<Integer> it = pressedKeys.iterator(); it.hasNext();) {
+            switch (it.next()) {
+                case KeyEvent.VK_W:
+                case KeyEvent.VK_UP:
+                    Vl+=acceleration;
+                    Vr+=acceleration; //TODO
+                    break;
+                case KeyEvent.VK_A:
+                case KeyEvent.VK_LEFT:
+                    Vl+=acceleration;
+                    //Vr-=acceleration;
+                    break;
+                case KeyEvent.VK_S:
+                case KeyEvent.VK_DOWN:
+                    Vl-=acceleration;
+                    Vr-=acceleration;
+                    break;
+                case KeyEvent.VK_D:
+                case KeyEvent.VK_RIGHT:
+                    //Vl-=acceleration;
+                    Vr+=acceleration;
+                    break;
 
-                    case KeyEvent.VK_SPACE:
-                        Vl = 0;
-                        Vr = 0;
-                }
+                case KeyEvent.VK_SPACE:
+                    Vl = 0;
+                    Vr = 0;
             }
         }
     }
