@@ -18,10 +18,14 @@ import java.io.PrintWriter;
 public class Game {
     JFrame mainWindow;
     GamePanel gamePanel;
-    List timeList;
+    List<Double> timeList;
+    List<Double> VlList;
+    List<Double> VrList;
 
     public Game() {
-       // timeList = new List();
+        timeList = new ArrayList();
+        VlList = new ArrayList();
+        VrList = new ArrayList();
         mainWindow = new JFrame();
         mainWindow.setSize(1000,1000);
         mainWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -29,16 +33,44 @@ public class Game {
         mainWindow.setLayout(new GridLayout());
         mainWindow.getContentPane().setBackground(Color.white);
         mainWindow.setResizable(false);
+        mainWindow.setLayout(new BorderLayout());
 
         gamePanel = new GamePanel();
+        mainWindow.add(gamePanel, BorderLayout.CENTER);
 
-        mainWindow.setLayout(new GridLayout(1,1));
-
-        mainWindow.add(gamePanel);
+        JButton generateButton = new JButton("Generate CSV");
+        generateButton.addActionListener(e -> {
+            generateCSV();
+            gamePanel.requestFocus();
+        });
+        mainWindow.add(generateButton, BorderLayout.PAGE_END);
 
         mainWindow.setVisible(true);
 
         gamePanel.moveLoop();
+    }
+
+    private void generateCSV(){
+        try (PrintWriter writer = new PrintWriter("test.csv")) {
+
+            StringBuilder sb = new StringBuilder();
+            sb.append("id");
+            sb.append(',');
+            sb.append("Name");
+            sb.append('\n');
+
+            sb.append("1");
+            sb.append(',');
+            sb.append("Prashant Ghimire");
+            sb.append('\n');
+
+            writer.write(sb.toString());
+
+            System.out.println("done!");
+
+        } catch (FileNotFoundException e) {
+            System.out.println(e.getMessage());
+        }
     }
 
 

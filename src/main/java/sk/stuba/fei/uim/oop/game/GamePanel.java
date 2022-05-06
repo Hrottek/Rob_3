@@ -15,16 +15,13 @@ import java.util.Iterator;
 import java.util.Set;
 import java.time.Instant;
 
-import static java.lang.Thread.sleep;
 
 public class GamePanel extends JPanel implements KeyListener {
     BufferedImage img;
-    double drawx, drawy,Xl,Yl,Xt,Yt;
+    double drawx, drawy;
     double Vl,Vr;
     double fi;
-    double rotation;
     double acceleration;
-    double speed;
     double L;
     private final Set<Integer> pressedKeys = new HashSet<>();
 
@@ -91,6 +88,8 @@ public class GamePanel extends JPanel implements KeyListener {
 //
 //            }
             repaint();
+
+
 
         }
     }
