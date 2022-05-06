@@ -1,5 +1,7 @@
 package sk.stuba.fei.uim.oop.game;
 
+import lombok.Getter;
+
 import javax.swing.*;
 import java.awt.*;
 import java.util.List;
@@ -14,6 +16,8 @@ public class Game {
     List<Double> YtList;
     List<Double> XtList;
     List<Double> fiList;
+    @Getter
+    private boolean writing;
 
     public Game() {
         timeList = new ArrayList();
@@ -36,11 +40,11 @@ public class Game {
         generateButton.addActionListener(e -> {
 
             try {
+                writing = true;
                 generateCSV();
-                System.out.println("skusam sa");
             } catch (Exception ex) {
                 System.out.println("nepodarilo sa");
-                generateCSV();
+                //generateCSV();
             }
             gamePanel.requestFocus();
 
@@ -80,13 +84,11 @@ public class Game {
             }
 
             writer.write(sb.toString());
-
+            writing = false;
             System.out.println("done!");
 
         } catch (FileNotFoundException e) {
             System.out.println(e.getMessage());
         }
     }
-
-
 }

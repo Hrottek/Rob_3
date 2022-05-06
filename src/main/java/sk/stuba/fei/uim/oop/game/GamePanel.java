@@ -15,15 +15,14 @@ import java.util.Set;
 
 
 public class GamePanel extends JPanel implements KeyListener {
+
     BufferedImage img;
     double drawx, drawy,Xt,Yt;
-
     double Vl,Vr;
-    double fi;
+    double phi;
     double acceleration;
     double L;
     private final Set<Integer> pressedKeys = new HashSet<>();
-    Double end;
     Game game;
     long start1;
     AffineTransform identityTrans;
@@ -35,12 +34,12 @@ public class GamePanel extends JPanel implements KeyListener {
         drawx = 500;
         drawy = 500;
 
-        fi = 0;
-        fi = Math.toRadians(fi);
+        phi = 0;
+        phi = Math.toRadians(phi);
         Vl = 0;
         Vr = 0;
 
-        acceleration = 0.0001;
+        acceleration = 0.001;
         this.addKeyListener(this);
         this.setFocusable(true);
         this.requestFocus();
@@ -59,19 +58,19 @@ public class GamePanel extends JPanel implements KeyListener {
         game.timeList.add(0.0);
         game.XtList.add(Xt);
         game.YtList.add(Yt);
-        game.fiList.add(fi);
+        game.fiList.add(phi);
 
     }
 
     private void calculateLocationAndRotation(){
-
+        //
         if(Vl != 0 || Vr != 0){
             double wt = (Vr - Vl)/L;
             double vt = (Vr + Vl)/2;
-            double dfi = wt * 0.0001;  //@TODO
-            fi += dfi;
-            double dx = vt * Math.cos(fi)*0.01;
-            double dy = vt * Math.sin(fi)*0.01;
+            double dfi = wt * 0.0001;
+            phi += dfi;
+            double dx = vt * Math.cos(phi)*0.01;
+            double dy = vt * Math.sin(phi)*0.01;
 
             if (drawx + dx >= 0 && drawx + dx <= 900) {
                 drawx += dx;
@@ -82,11 +81,7 @@ public class GamePanel extends JPanel implements KeyListener {
 
             Xt +=dx;
             Yt +=dy;
-
-//            System.out.println(Vl); @TODO
-//            System.out.println(Vr);
         }
-
     }
 
     public void moveLoop(){
@@ -96,12 +91,12 @@ public class GamePanel extends JPanel implements KeyListener {
                 repaint();
            }
 
-            if((double)(System.currentTimeMillis() - start1)/1000 > 0.01){
+            if((double)(System.currentTimeMillis() - start1)/1000 > 0.01 && !game.isWriting()){
                 double end = (double)(System.currentTimeMillis() - start1)/1000;
                 game.timeList.add(end + game.timeList.get(game.timeList.size() -1));
                 game.XtList.add(Xt);
                 game.YtList.add(Yt);
-                game.fiList.add(fi);
+                game.fiList.add(phi);
                 start1 = System.currentTimeMillis();
             }
         }
@@ -121,23 +116,14 @@ public class GamePanel extends JPanel implements KeyListener {
 
         double locationX = img.getWidth()/2;
         double locationY = img.getHeight()/2;
-        AffineTransform tx = AffineTransform.getRotateInstance(fi + Math.PI/2, locationX, locationY);
+        AffineTransform tx = AffineTransform.getRotateInstance(phi + Math.PI/2, locationX, locationY);
       //  tx.scale(0.1,0.1);
         AffineTransformOp op = new AffineTransformOp(tx, AffineTransformOp.TYPE_BILINEAR);
 
 
 // Drawing the rotated image at the required drawing locations
+        g2d.setBackground(Color.GREEN);
         g2d.drawImage(op.filter(img, null), (int)drawx, (int)drawy, null);
-    }
-
-    private void deccelarate(int V) {
-        while (V != 0) {
-            if (V > 0) {
-                V--;
-            } else{
-                V++;
-            }
-        }
     }
 
     @Override
@@ -153,7 +139,7 @@ public class GamePanel extends JPanel implements KeyListener {
                 case KeyEvent.VK_A:
                 case KeyEvent.VK_LEFT:
                     Vl+=acceleration;
-                    //Vr-=acceleration;
+                    Vr-=acceleration;
                     break;
                 case KeyEvent.VK_S:
                 case KeyEvent.VK_DOWN:
@@ -162,13 +148,14 @@ public class GamePanel extends JPanel implements KeyListener {
                     break;
                 case KeyEvent.VK_D:
                 case KeyEvent.VK_RIGHT:
-                    //Vl-=acceleration;
+                    Vl-=acceleration;
                     Vr+=acceleration;
                     break;
 
                 case KeyEvent.VK_SPACE:
                     Vl = 0;
                     Vr = 0;
+                    break;
             }
         }
     }
@@ -176,37 +163,7 @@ public class GamePanel extends JPanel implements KeyListener {
     @Override
     public synchronized void keyReleased(KeyEvent e) {
         pressedKeys.remove(e.getKeyCode());
-//        pressedKeys.add(e.getKeyCode());
-//        if (!pressedKeys.isEmpty()) {
-//            for (Iterator<Integer> it = pressedKeys.iterator(); it.hasNext();) {
-//                switch (it.next()) {
-//                    case KeyEvent.VK_W:
-//                    case KeyEvent.VK_UP:
-//                        Vl-=2*acceleration;
-//                        Vr-=2*acceleration;
-//                        break;
-//                    case KeyEvent.VK_A:
-//                    case KeyEvent.VK_LEFT:
-//                        Vl-=2*acceleration;
-//                        //Vr-=acceleration;
-//                        break;
-//                    case KeyEvent.VK_S:
-//                    case KeyEvent.VK_DOWN:
-//                        Vl+=2*acceleration;
-//                        Vr+=2*acceleration;
-//                        break;
-//                    case KeyEvent.VK_D:
-//                    case KeyEvent.VK_RIGHT:
-//                        //Vl-=acceleration;
-//                        Vr+=2*acceleration;
-//                        break;
-//
-//                    case KeyEvent.VK_SPACE:
-//                        Vl = 0;
-//                        Vr = 0;
-//                }
-//            }
-//        }
+
     }
 
     @Override
