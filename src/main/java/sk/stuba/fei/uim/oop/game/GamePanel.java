@@ -64,7 +64,7 @@ public class GamePanel extends JPanel implements KeyListener {
     }
 
     private void calculateLocationAndRotation(){
-        //
+
         if(Vl != 0 || Vr != 0){
             double wt = (Vr - Vl)/L;
             double vt = (Vr + Vl)/2;
