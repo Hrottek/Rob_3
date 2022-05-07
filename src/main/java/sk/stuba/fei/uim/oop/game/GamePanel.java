@@ -33,7 +33,6 @@ public class GamePanel extends JPanel implements KeyListener {
         L = 0.2;
         drawx = 500;
         drawy = 500;
-
         phi = 0;
         phi = Math.toRadians(phi);
         Vl = 0;
@@ -63,7 +62,6 @@ public class GamePanel extends JPanel implements KeyListener {
     }
 
     private void calculateLocationAndRotation(){
-        //
         if(Vl != 0 || Vr != 0){
             double wt = (Vr - Vl)/L;
             double vt = (Vr + Vl)/2;
@@ -117,9 +115,7 @@ public class GamePanel extends JPanel implements KeyListener {
         double locationX = img.getWidth()/2;
         double locationY = img.getHeight()/2;
         AffineTransform tx = AffineTransform.getRotateInstance(phi + Math.PI/2, locationX, locationY);
-      //  tx.scale(0.1,0.1);
         AffineTransformOp op = new AffineTransformOp(tx, AffineTransformOp.TYPE_BILINEAR);
-
 
 // Drawing the rotated image at the required drawing locations
         g2d.setBackground(Color.GREEN);

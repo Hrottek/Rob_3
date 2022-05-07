@@ -44,7 +44,6 @@ public class Game {
                 generateCSV();
             } catch (Exception ex) {
                 System.out.println("nepodarilo sa");
-                //generateCSV();
             }
             gamePanel.requestFocus();
 
@@ -68,13 +67,11 @@ public class Game {
             sb.append('\n');
             for (Double value : XtList) {
                 sb.append(value * 0.01);
-                //sb.append(value);
                 sb.append(',');
             }
             sb.append('\n');
             for (Double aDouble : YtList) {
                sb.append((aDouble * - 1)*0.01);   //@TODO
-                //sb.append(aDouble * - 1);
                 sb.append(',');
             }
             sb.append('\n');
