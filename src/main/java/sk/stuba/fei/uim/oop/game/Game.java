@@ -71,7 +71,7 @@ public class Game {
             }
             sb.append('\n');
             for (Double aDouble : YtList) {
-               sb.append((aDouble * - 1)*0.01);   //@TODO
+               sb.append((aDouble * - 1)*0.01);
                 sb.append(',');
             }
             sb.append('\n');

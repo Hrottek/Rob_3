@@ -108,7 +108,6 @@ public class GamePanel extends JPanel implements KeyListener {
 
     private void rotate(Graphics g){
         Graphics2D g2d = (Graphics2D) g;
-        // The required drawing location
 
 // Rotation information
 
@@ -118,7 +117,6 @@ public class GamePanel extends JPanel implements KeyListener {
         AffineTransformOp op = new AffineTransformOp(tx, AffineTransformOp.TYPE_BILINEAR);
 
 // Drawing the rotated image at the required drawing locations
-        g2d.setBackground(Color.GREEN);
         g2d.drawImage(op.filter(img, null), (int)drawx, (int)drawy, null);
     }
 
