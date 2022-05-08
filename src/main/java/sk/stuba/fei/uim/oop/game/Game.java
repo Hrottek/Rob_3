@@ -56,7 +56,7 @@ public class Game {
     }
 
     private void generateCSV(){
-        try (PrintWriter writer = new PrintWriter("test.csv")) {
+        try (PrintWriter writer = new PrintWriter("dataXtYt.csv")) {
 
             StringBuilder sb = new StringBuilder();
 
